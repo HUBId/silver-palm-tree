@@ -126,4 +126,4 @@ std::string Wallet::publicKeyToAddress(const secp256k1_pubkey& pubKey) const {
     return bytesToHex(addressHash);
 }
 
-} // namespace prunet
+} // namespace 
