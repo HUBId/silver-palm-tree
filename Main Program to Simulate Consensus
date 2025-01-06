@@ -1,0 +1,37 @@
+#include "blockchain.h"
+#include "consensus.h"
+#include "blockvalidation.h"
+#include <iostream>
+
+int main() {
+    // Create the blockchain instance
+    Blockchain blockchain;
+
+    // Create nodes and register them to the consensus
+    Node node1("Node1", 100);
+    Node node2("Node2", 300);
+    Node node3("Node3", 500);
+
+    Consensus consensus;
+    consensus.registerNode(node1);
+    consensus.registerNode(node2);
+    consensus.registerNode(node3);
+
+    // Start consensus rounds and add blocks to the blockchain
+    for (int i = 0; i < 5; ++i) {
+        consensus.startConsensusRound();
+
+        // Simulate adding a block to the blockchain
+        Block newBlock("Block Data " + std::to_string(i), blockchain.getBlock(i).getHash());
+        blockchain.addBlock(newBlock);
+
+        // Print the current blockchain after each round
+        std::cout << "\nBlockchain after round " << i + 1 << ":" << std::endl;
+        blockchain.printBlockchain();
+
+        // Print node reputation after each round
+        consensus.printNodeReputation();
+    }
+
+    return 0;
+}
