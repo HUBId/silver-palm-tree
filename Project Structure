@@ -1,0 +1,20 @@
+prunet-full-code-2.0/
+├── src/
+│   ├── blockchain.cpp           # Blockchain core logic
+│   ├── consensus.cpp            # Consensus logic
+│   ├── compression.cpp          # Compcrypt recursive compression
+│   ├── snark_proof.cpp          # SNARK proof generation (Halo2 or KZG10)
+│   ├── networking.cpp           # Libp2p and gossip protocol
+│   ├── wallet.cpp               # Wallet logic (based on Electrum)
+│   └── main.cpp                 # Main entry point
+├── include/
+│   ├── blockchain.h             # Header for blockchain
+│   ├── consensus.h              # Header for consensus logic
+│   ├── compression.h            # Header for Compcrypt compression
+│   ├── snark_proof.h            # Header for SNARK proof generation
+│   ├── networking.h             # Header for networking logic
+│   └── wallet.h                 # Header for wallet logic
+├── CMakeLists.txt               # CMake build configuration
+├── README.md                    # Project README
+├── LICENSE                      # Open-source license
+└── .gitignore                   # Git ignore file
