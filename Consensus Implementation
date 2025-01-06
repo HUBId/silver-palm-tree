@@ -1,0 +1,76 @@
+#include "consensus.h"
+#include <iostream>
+#include <algorithm>
+#include <ctime>
+
+Node::Node(const std::string &id, unsigned int timetokens)
+    : id(id), timetokens(timetokens) {}
+
+const std::string& Node::getId() const {
+    return id;
+}
+
+unsigned int Node::getTimetokens() const {
+    return timetokens;
+}
+
+void Node::addTimetokens(unsigned int tokens) {
+    timetokens += tokens;
+}
+
+int Node::getReputationLevel() const {
+    if (timetokens < 100) return 1;  // 1-star
+    if (timetokens < 500) return 2;  // 2-star
+    if (timetokens < 1000) return 3; // 3-star
+    if (timetokens < 5000) return 4; // 4-star
+    if (timetokens < 10000) return 5; // 5-star
+    return 6; // 6-star
+}
+
+Consensus::Consensus() : currentRound(0) {}
+
+void Consensus::registerNode(const Node &node) {
+    nodes.push_back(node);
+    nodeReputation[node.getId()] = node.getReputationLevel();
+}
+
+Node& Consensus::selectLeader() {
+    // Select leader based on highest timetokens from the nodes
+    std::sort(nodes.begin(), nodes.end(), [](const Node &a, const Node &b) {
+        return a.getTimetokens() > b.getTimetokens();
+    });
+
+    // Leader is the node with highest timetokens
+    return nodes.front();
+}
+
+void Consensus::validateBlock(const Block &block) {
+    // For now, we simulate validation by simply checking the block's hash and data.
+    // In a real-world scenario, we would also verify the SNARK proofs here.
+    std::cout << "Validating block: " << block.getHash() << std::endl;
+}
+
+void Consensus::startConsensusRound() {
+    std::cout << "\n--- Starting Consensus Round " << currentRound << " ---" << std::endl;
+
+    // Select the leader for the current round
+    Node &leader = selectLeader();
+    std::cout << "Leader for this round: " << leader.getId() << " with " 
+              << leader.getTimetokens() << " timetokens." << std::endl;
+
+    // Validate the new block (simplified, SNARK verification should be done here)
+    Block block("Sample Block Data", "0");  // Just a sample block for now
+    validateBlock(block);
+
+    // Increment the consensus round
+    currentRound++;
+}
+
+void Consensus::printNodeReputation() const {
+    std::cout << "\nNode Reputation:" << std::endl;
+    for (const auto &node : nodes) {
+        std::cout << "Node " << node.getId() << " has " << node.getTimetokens() 
+                  << " timetokens and a " << node.getReputationLevel() << "-star reputation." 
+                  << std::endl;
+    }
+}
