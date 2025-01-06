@@ -1,0 +1,47 @@
+#include "compression.h"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstring>
+
+// Helper function to recursively compress blocks
+void Compcrypt::recursiveCompress(Blockchain &blockchain, size_t startIndex, size_t endIndex) {
+    if (startIndex >= endIndex) {
+        return;
+    }
+
+    // Compress the current set of blocks (we'll assume a simple string concatenation for illustration)
+    std::string compressedData;
+    for (size_t i = startIndex; i < endIndex; ++i) {
+        const Block &block = blockchain.getBlock(i);
+        compressedData += block.getData(); // Add block's data to compressed string
+    }
+
+    // Store compressed data as a new "compressed" block or modify the last block
+    blockchain.compressBlock(startIndex, compressedData);
+    
+    // Recursively compress further if needed
+    size_t mid = (startIndex + endIndex) / 2;
+    recursiveCompress(blockchain, startIndex, mid);
+    recursiveCompress(blockchain, mid, endIndex);
+}
+
+// Compress the entire blockchain by recursively compressing blocks
+void Compcrypt::compress(Blockchain &blockchain) {
+    std::cout << "Performing recursive compression on blockchain..." << std::endl;
+
+    // Start the recursive compression process on the full blockchain
+    recursiveCompress(blockchain, 0, blockchain.getChainSize());
+}
+
+// Decompress logic for the blockchain (assumes original blocks can be restored)
+void Compcrypt::decompress(Blockchain &blockchain) {
+    std::cout << "Decompressing blockchain..." << std::endl;
+    
+    // For illustration purposes, we'll just print the data
+    // In practice, you'd reconstruct each block using previously stored data
+    for (size_t i = 0; i < blockchain.getChainSize(); ++i) {
+        Block &block = blockchain.getBlock(i);
+        std::cout << "Decompressed Block " << i << ": " << block.getData() << std::endl;
+    }
+}
