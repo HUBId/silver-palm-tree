@@ -1,0 +1,43 @@
+#ifndef CONSENSUS_H
+#define CONSENSUS_H
+
+#include <string>
+#include <vector>
+#include <map>
+#include "blockchain.h"
+
+// Node class representing a participant node in the network
+class Node {
+public:
+    Node(const std::string &id, unsigned int timetokens);
+
+    const std::string& getId() const;
+    unsigned int getTimetokens() const;
+    void addTimetokens(unsigned int tokens);
+
+    // The node's reputation level (from 1-star to 6-stars)
+    int getReputationLevel() const;
+
+private:
+    std::string id;
+    unsigned int timetokens;
+};
+
+// Consensus class that manages leader selection, BFT, and block validation
+class Consensus {
+public:
+    Consensus();
+    void registerNode(const Node &node);
+    Node& selectLeader();
+    void validateBlock(const Block &block);
+    void startConsensusRound();
+    void printNodeReputation() const;
+
+private:
+    std::vector<Node> nodes;  // List of nodes in the network
+    std::map<std::string, int> nodeReputation;  // Node reputation levels (1 to 6 stars)
+    Blockchain blockchain;  // The blockchain where blocks are added
+    int currentRound;  // Tracks the consensus round
+};
+
+#endif // CONSENSUS_H
