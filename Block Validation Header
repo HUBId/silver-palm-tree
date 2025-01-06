@@ -1,0 +1,12 @@
+#ifndef BLOCKVALIDATION_H
+#define BLOCKVALIDATION_H
+
+#include "blockchain.h"
+
+class BlockValidation {
+public:
+    // Validate the block using a simple hash validation and SNARK proof verification
+    static bool validateBlock(const Block &block);
+};
+
+#endif // BLOCKVALIDATION_H
