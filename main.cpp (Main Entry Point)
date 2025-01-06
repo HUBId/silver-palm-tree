@@ -1,0 +1,105 @@
+#include <iostream>
+#include <vector>
+#include <thread>
+#include <chrono>
+#include "blockchain.h"   // Blockchain core logic
+#include "transaction_pool.h"  // Transaction pool
+#include "wallet.h"         // Wallet logic
+#include "networking.h"     // Libp2p networking and gossip protocol
+#include "consensus.h"      // Consensus logic
+#include "snark_proof_validator.h" // SNARK proof validation
+#include "config.h"         // Configuration settings
+
+// Global Constants
+const int NUM_NODES = 10;   // Number of nodes in the network
+const int NUM_VALIDATORS = 5;  // Number of consensus validators
+
+// Main Node class
+class Node {
+public:
+    std::string node_id;
+    Blockchain blockchain;
+    TransactionPool tx_pool;
+    Wallet wallet;
+    Networking network;
+    Consensus consensus;
+
+    Node(std::string id) : node_id(id), blockchain(1000000), consensus(NUM_VALIDATORS) {}
+
+    // Initialize and start the node
+    void startNode() {
+        // Start networking to connect to peers
+        std::cout << "Node " << node_id << " is starting..." << std::endl;
+        network.initializeNode(node_id);
+
+        // Start consensus process
+        std::thread consensus_thread(&Node::startConsensus, this);
+        consensus_thread.detach();
+
+        // Start transaction pool listener (simulated)
+        std::thread tx_pool_thread(&Node::listenForTransactions, this);
+        tx_pool_thread.detach();
+
+        // Wait for input to simulate the running node
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+        }
+    }
+
+    // Start the consensus process
+    void startConsensus() {
+        while (true) {
+            std::cout << "Node " << node_id << " is performing consensus round..." << std::endl;
+            consensus.performConsensusRound(blockchain, tx_pool);
+            std::this_thread::sleep_for(std::chrono::seconds(10));  // Simulate consensus interval
+        }
+    }
+
+    // Listen for incoming transactions and add them to the transaction pool
+    void listenForTransactions() {
+        while (true) {
+            // Simulate receiving transactions and adding them to the pool
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+
+            // Simulate wallet sending a transaction
+            std::string receiver = "0x12345678";
+            uint64_t amount = 100;
+            wallet.sendTransaction(receiver, amount, tx_pool);
+        }
+    }
+};
+
+// Initialize the Blockchain system
+void initializeBlockchainSystem() {
+    std::cout << "Initializing Prunet Blockchain System..." << std::endl;
+
+    // Create a list of nodes (nodes could be simulated in this example)
+    std::vector<Node> nodes;
+    for (int i = 0; i < NUM_NODES; ++i) {
+        std::string node_id = "Node_" + std::to_string(i + 1);
+        nodes.push_back(Node(node_id));
+    }
+
+    // Start all nodes (Simulated network)
+    for (auto& node : nodes) {
+        std::thread node_thread(&Node::startNode, &node);
+        node_thread.detach();
+    }
+
+    // Let the system run indefinitely, or for a set number of rounds
+    std::this_thread::sleep_for(std::chrono::minutes(5));
+}
+
+// Entry point of the application
+int main(int argc, char* argv[]) {
+    // Parse arguments (for now, we don't have command-line options, but this can be expanded)
+    if (argc > 1) {
+        std::cout << "Usage: ./prunet" << std::endl;
+        return 1;
+    }
+
+    // Initialize the Blockchain system
+    initializeBlockchainSystem();
+
+    return 0;
+}
