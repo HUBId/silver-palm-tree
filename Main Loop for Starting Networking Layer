@@ -1,0 +1,20 @@
+int main() {
+    uint64_t node_id = 1;  // Each node has a unique ID
+    NetworkingLayer net_layer(node_id);
+
+    net_layer.startListening();  // Start listening for incoming messages
+    net_layer.startGossip();  // Start gossiping messages
+
+    // Simulate adding a new peer to the network
+    net_layer.addPeer("Peer_1");
+
+    // Simulate sending a new message (block, transaction, etc.)
+    Message new_message = {"Peer_0", "New Block: BlockDataHere", 1234567890, "signature"};
+    net_layer.propagateMessage(new_message);  // Broadcast the message to peers
+
+    // Stop the network layer after the test
+    std::this_thread::sleep_for(std::chrono::seconds(20));
+    net_layer.stop();
+
+    return 0;
+}
