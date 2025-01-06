@@ -1,0 +1,14 @@
+void startGossip() {
+    // Periodically broadcast transactions and blocks to peers
+    std::thread gossip_thread([this]() {
+        while (true) {
+            if (!message_queue.empty()) {
+                // Propagate the first message in the queue to all peers
+                propagateMessage(message_queue.front());
+                message_queue.erase(message_queue.begin());
+            }
+            std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate gossiping every 5 seconds
+        }
+    });
+    gossip_thread.detach();
+}
