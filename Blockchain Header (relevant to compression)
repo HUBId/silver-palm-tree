@@ -1,0 +1,41 @@
+#ifndef BLOCKCHAIN_H
+#define BLOCKCHAIN_H
+
+#include <vector>
+#include <string>
+
+// Block class that holds individual block data
+class Block {
+public:
+    Block(const std::string &data, const std::string &prevHash);
+
+    const std::string& getHash() const;
+    const std::string& getData() const;
+    const std::string& getPrevHash() const;
+
+    void setData(const std::string &newData);
+    void setHash(const std::string &newHash);
+
+private:
+    std::string data;
+    std::string prevHash;
+    std::string hash;  // Simplified hash for illustration purposes
+};
+
+// Blockchain class that holds the entire chain
+class Blockchain {
+public:
+    Blockchain();
+
+    void addBlock(const Block &newBlock);
+    Block& getBlock(size_t index);
+    size_t getChainSize() const;
+    void compressBlock(size_t index, const std::string &compressedData);
+
+    void printBlockchain();
+
+private:
+    std::vector<Block> chain;
+};
+
+#endif // BLOCKCHAIN_H
