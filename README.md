@@ -1,4 +1,4 @@
-high-performance, decentralized blockchain protocol that combines advanced cryptographic techniques, network protocols, and a reputation-based consensus mechanism. It integrates recursive compression, zero-knowledge proofs (SNARKs), Libp2p networking, and fixed-size blockchain concepts to offer scalability and security.
+High-performance, decentralized blockchain protocol that combines advanced cryptographic techniques, network protocols, and a reputation-based consensus mechanism. It integrates recursive compression, zero-knowledge proofs (SNARKs), Libp2p networking, and fixed-size blockchain concepts to offer scalability and security.
 
 This version implements SNARK proof generation with Halo2 and KZG10, timed tokenomics for node reputation, and Gossip Protocol for peer-to-peer communication.
 Key Features
