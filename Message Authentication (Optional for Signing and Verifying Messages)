@@ -1,0 +1,15 @@
+#include <openssl/sha.h>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
+
+std::string generateSignature(const std::string& message, const std::string& privateKey) {
+    // RSA or Ed25519 signing for message authentication
+    // Use OpenSSL to sign the message
+    return "generated_signature";  // Mock signature generation
+}
+
+bool verifySignature(const std::string& message, const std::string& signature, const std::string& publicKey) {
+    // Verify signature using public key
+    return true;  // Mock signature verification
+}
