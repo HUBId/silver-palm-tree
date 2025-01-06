@@ -8,7 +8,7 @@
 #include <openssl/sha.h>  // For hash functions (SHA256, etc.)
 #include <iomanip>  // For formatting the output
 
-namespace prunet {
+namespace {
 
 // Wallet class that contains keys, address generation, and transaction signing
 class Wallet {
