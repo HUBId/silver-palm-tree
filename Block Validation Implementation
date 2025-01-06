@@ -1,0 +1,12 @@
+#include "blockvalidation.h"
+#include <iostream>
+#include <string>
+
+bool BlockValidation::validateBlock(const Block &block) {
+    // For now, only validate by hash (you would also validate SNARK proofs here in practice)
+    std::cout << "Validating Block with hash: " << block.getHash() << std::endl;
+
+    // Simple validation - verify that block data and hash match
+    std::string reconstructedHash = std::to_string(std::hash<std::string>{}(block.getData() + block.getPrevHash()));
+    return reconstructedHash == block.getHash();
+}
