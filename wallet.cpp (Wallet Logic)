@@ -1,0 +1,114 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+#include <cassert>
+#include "snark_proof_validator.h"  // Assume this is the header for SNARK validation logic
+#include "transaction_pool.h"      // Assume this is the header for the transaction pool
+#include "crypto_utils.h"          // A utility file for cryptographic functions (e.g., key generation, signing)
+
+// Wallet Class Definition
+class Wallet {
+public:
+    std::string wallet_address;
+    std::string private_key;
+    std::string public_key;
+
+    Wallet() {
+        generateKeys();
+    }
+
+    // Generates a random wallet key pair (private and public keys)
+    void generateKeys() {
+        private_key = generatePrivateKey();
+        public_key = generatePublicKey(private_key);
+        wallet_address = generateAddress(public_key);
+    }
+
+    // Sends a transaction from this wallet to another address with a given amount
+    bool sendTransaction(const std::string& receiver, uint64_t amount, TransactionPool& tx_pool) {
+        uint64_t timestamp = static_cast<uint64_t>(time(0));  // Current timestamp
+
+        // Generate SNARK proof for the transaction
+        std::vector<uint8_t> snark_proof = generateSnarkProof(private_key, receiver, amount, timestamp);
+
+        // Create the transaction
+        std::string signature = signTransaction(receiver, amount, snark_proof);
+        Transaction tx(wallet_address, receiver, amount, timestamp, signature, snark_proof);
+
+        // Insert the transaction into the pool
+        tx_pool.insertTransaction(tx);
+
+        std::cout << "Transaction sent from " << wallet_address << " to " << receiver << std::endl;
+        return true;
+    }
+
+    // Generates a SNARK proof for a transaction (client-side)
+    std::vector<uint8_t> generateSnarkProof(const std::string& sender_private_key, const std::string& receiver, uint64_t amount, uint64_t timestamp) {
+        // Here you would use the Halo2 or KZG10 SNARK circuits to generate a proof.
+        // For simplicity, we'll return a dummy proof for this example.
+        std::vector<uint8_t> proof;
+        proof.push_back(0x01); // Dummy proof data
+        proof.push_back(0x02);
+        proof.push_back(0x03);
+        return proof;
+    }
+
+    // Signs a transaction using the wallet's private key
+    std::string signTransaction(const std::string& receiver, uint64_t amount, const std::vector<uint8_t>& snark_proof) {
+        // Simple signing algorithm (in practice, use a secure signing algorithm like ECDSA or EdDSA)
+        std::string data = receiver + std::to_string(amount) + std::to_string(snark_proof.size());
+        return signData(private_key, data);  // signData is a utility function for signing
+    }
+
+    // Utility function to generate a random private key
+    std::string generatePrivateKey() {
+        srand(time(0));
+        std::string private_key;
+        for (int i = 0; i < 64; i++) {
+            private_key.push_back(rand() % 256);  // Random byte
+        }
+        return private_key;
+    }
+
+    // Utility function to generate a public key from a private key
+    std::string generatePublicKey(const std::string& private_key) {
+        // In a real implementation, you would use an elliptic curve algorithm to generate the public key.
+        return private_key;  // For simplicity, return the private key as the public key
+    }
+
+    // Utility function to generate an address from the public key
+    std::string generateAddress(const std::string& public_key) {
+        return "0x" + public_key.substr(0, 8);  // For simplicity, return the first 8 characters of the public key as the address
+    }
+
+private:
+    // Utility function to sign data (in a real implementation, use a secure signing algorithm like ECDSA or EdDSA)
+    std::string signData(const std::string& private_key, const std::string& data) {
+        return "signed_" + data;  // Dummy signing mechanism
+    }
+};
+
+// Main Application
+int main() {
+    // Create a TransactionPool instance
+    TransactionPool tx_pool;
+
+    // Create a Wallet instance
+    Wallet wallet;
+    std::cout << "Wallet Address: " << wallet.wallet_address << std::endl;
+
+    // Simulate sending a transaction from the wallet
+    std::string receiver = "0x12345678";
+    uint64_t amount = 100;
+    wallet.sendTransaction(receiver, amount, tx_pool);
+
+    // Print the transactions in the pool
+    std::cout << "Transactions in the pool: " << std::endl;
+    for (const auto& tx : tx_pool.getTransactions()) {
+        std::cout << "Transaction: " << tx.sender << " -> " << tx.receiver << ", Amount: " << tx.amount << std::endl;
+    }
+
+    return 0;
+}
