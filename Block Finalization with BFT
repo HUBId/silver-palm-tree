@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Block {
+public:
+    std::string data;
+    bool is_valid;
+
+    Block(std::string data) : data(data), is_valid(true) {}
+};
+
+class Node {
+public:
+    bool validate_block(Block& block) {
+        // Simple validation logic
+        return block.is_valid;
+    }
+};
+
+bool finalize_block(Block& block, std::vector<Node>& nodes) {
+    // BFT finalization (assuming > 2/3 majority agreement)
+    int valid_count = 0;
+    for (auto& node : nodes) {
+        if (node.validate_block(block)) {
+            valid_count++;
+        }
+    }
+    return valid_count > nodes.size() * 2 / 3;
+}
+
+int main() {
+    Block new_block("Block data");
+
+    std::vector<Node> nodes = {Node(), Node(), Node()};  // 3 nodes in total
+
+    if (finalize_block(new_block, nodes)) {
+        std::cout << "Block finalized successfully!" << std::endl;
+    } else {
+        std::cout << "Block validation failed!" << std::endl;
+    }
+
+    return 0;
+}
