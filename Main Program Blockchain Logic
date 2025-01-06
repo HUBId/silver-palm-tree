@@ -1,0 +1,27 @@
+#include "blockchain.h"
+#include "compression.h"
+#include <iostream>
+
+int main() {
+    // Create the blockchain and add blocks
+    Blockchain blockchain;
+    blockchain.addBlock(Block("Transaction 1", blockchain.getBlock(0).getHash()));
+    blockchain.addBlock(Block("Transaction 2", blockchain.getBlock(1).getHash()));
+    blockchain.addBlock(Block("Transaction 3", blockchain.getBlock(2).getHash()));
+
+    // Print the original blockchain
+    std::cout << "Original Blockchain:" << std::endl;
+    blockchain.printBlockchain();
+
+    // Apply recursive compression using Compcrypt
+    Compcrypt::compress(blockchain);
+
+    // Print the compressed blockchain
+    std::cout << "\nCompressed Blockchain:" << std::endl;
+    blockchain.printBlockchain();
+
+    // Decompress the blockchain (for demonstration)
+    Compcrypt::decompress(blockchain);
+
+    return 0;
+}
