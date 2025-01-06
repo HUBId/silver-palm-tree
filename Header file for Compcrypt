@@ -1,0 +1,18 @@
+#ifndef COMPRESSION_H
+#define COMPRESSION_H
+
+#include "blockchain.h"
+
+class Compcrypt {
+public:
+    // Compress the blockchain recursively
+    static void compress(Blockchain &blockchain);
+    
+    // Decompress the blockchain (reverse of compression)
+    static void decompress(Blockchain &blockchain);
+    
+    // Additional helper functions
+    static void recursiveCompress(Blockchain &blockchain, size_t startIndex, size_t endIndex);
+};
+
+#endif // COMPRESSION_H
