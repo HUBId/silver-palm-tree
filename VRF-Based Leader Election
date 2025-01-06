@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+#include <random>
+#include <algorithm>
+
+// Simulate VRF-based selection with Timetokens as the bias factor
+
+class Node {
+public:
+    uint64_t timetokens;  // Reputation score
+    uint64_t vrf_output;  // Random value based on VRF
+
+    Node(uint64_t timetokens) : timetokens(timetokens) {
+        vrf_output = generate_vrf(timetokens);  // Generate VRF output based on timetokens
+    }
+
+private:
+    uint64_t generate_vrf(uint64_t timetokens) {
+        // Simulating VRF generation using a simple random number generator and timetokens as a seed
+        std::mt19937_64 rng(timetokens);
+        return rng();
+    }
+};
+
+Node select_leader(std::vector<Node>& nodes) {
+    // Find the node with the highest VRF output or highest timetokens in case of ties
+    return *std::max_element(nodes.begin(), nodes.end(), [](const Node& a, const Node& b) {
+        if (a.vrf_output == b.vrf_output) {
+            return a.timetokens < b.timetokens;
+        }
+        return a.vrf_output < b.vrf_output;
+    });
+}
+
+int main() {
+    // Simulate a set of nodes with random timetokens
+    std::vector<Node> nodes = {
+        Node(100), Node(200), Node(300), Node(400)
+    };
+
+    // Select the leader node based on VRF output and timetokens
+    Node leader = select_leader(nodes);
+
+    std::cout << "Leader selected with " << leader.timetokens << " Timetokens." << std::endl;
+    return 0;
+}
