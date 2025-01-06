@@ -1,0 +1,60 @@
+#include "blockchain.h"
+#include <iostream>
+#include <sstream>
+
+Block::Block(const std::string &data, const std::string &prevHash)
+    : data(data), prevHash(prevHash) {
+    // A very simple hash function (for illustration only)
+    std::ostringstream hashStream;
+    hashStream << data << prevHash;
+    hash = std::to_string(std::hash<std::string>{}(hashStream.str()));
+}
+
+const std::string& Block::getHash() const {
+    return hash;
+}
+
+const std::string& Block::getData() const {
+    return data;
+}
+
+const std::string& Block::getPrevHash() const {
+    return prevHash;
+}
+
+void Block::setData(const std::string &newData) {
+    data = newData;
+}
+
+void Block::setHash(const std::string &newHash) {
+    hash = newHash;
+}
+
+Blockchain::Blockchain() {
+    // Initialize with the Genesis block
+    chain.push_back(Block("Genesis Block", "0"));
+}
+
+void Blockchain::addBlock(const Block &newBlock) {
+    chain.push_back(newBlock);
+}
+
+Block& Blockchain::getBlock(size_t index) {
+    return chain.at(index);
+}
+
+size_t Blockchain::getChainSize() const {
+    return chain.size();
+}
+
+void Blockchain::compressBlock(size_t index, const std::string &compressedData) {
+    // For simplicity, just modify the block's data
+    chain.at(index).setData(compressedData);
+}
+
+void Blockchain::printBlockchain() {
+    for (size_t i = 0; i < chain.size(); ++i) {
+        std::cout << "Block " << i << " Hash: " << chain.at(i).getHash()
+                  << " Data: " << chain.at(i).getData() << std::endl;
+    }
+}
