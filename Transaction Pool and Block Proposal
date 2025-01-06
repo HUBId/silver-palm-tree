@@ -1,0 +1,45 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+
+struct Transaction {
+    uint64_t fee;
+    std::string data;  // Transaction data (for simplicity)
+
+    bool operator<(const Transaction& other) const {
+        return fee < other.fee;  // Prioritize higher fees
+    }
+};
+
+class TransactionPool {
+public:
+    void add_transaction(const Transaction& tx) {
+        pool.push(tx);  // Add transaction to pool
+    }
+
+    Transaction get_next_transaction() {
+        if (!pool.empty()) {
+            Transaction tx = pool.top();  // Get the highest fee transaction
+            pool.pop();
+            return tx;
+        }
+        return Transaction{0, ""};  // No transaction to process
+    }
+
+private:
+    std::priority_queue<Transaction> pool;
+};
+
+int main() {
+    TransactionPool tx_pool;
+
+    // Add some transactions to the pool
+    tx_pool.add_transaction(Transaction{100, "tx1"});
+    tx_pool.add_transaction(Transaction{200, "tx2"});
+    tx_pool.add_transaction(Transaction{150, "tx3"});
+
+    // Block proposer selects the highest-fee transaction
+    Transaction tx = tx_pool.get_next_transaction();
+    std::cout << "Transaction selected for block: " << tx.data << " with fee " << tx.fee << std::endl;
+    return 0;
+}
